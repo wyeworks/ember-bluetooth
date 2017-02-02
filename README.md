@@ -1,6 +1,12 @@
 # ember-bluetooth
 
-This README outlines the details of collaborating on this Ember addon.
+This is an ongoing effort to build an easy-to-use addon to intereact with
+bluetooth devices within ember apps.
+
+
+## Web Bluetooth API
+
+[Web Bluetooth - Draft Community Group Report](https://webbluetoothcg.github.io/web-bluetooth/)
 
 ## Installation
 
