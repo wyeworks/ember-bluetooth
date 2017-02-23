@@ -8,6 +8,11 @@ bluetooth devices within ember apps.
 
 [Web Bluetooth - Draft Community Group Report](https://webbluetoothcg.github.io/web-bluetooth/)
 
+
+## Web Bluetooth Samples
+
+[Google Chrome - Bluetooth samples](https://googlechrome.github.io/samples/web-bluetooth/index.html)
+
 ## Installation
 
 * `git clone <repository-url>` this repository
