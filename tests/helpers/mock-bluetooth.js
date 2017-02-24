@@ -39,24 +39,26 @@ const Mock = Ember.Object.extend({
         requestDevice: function() {
           return Promise.resolve({
             name: deviceName,
-            gatt: function() {
-              return Promise.resolve({
-                getPrimaryService: function() {
-                  return Promise.resolve({
-                    getCharacteristic: function() {
-                      return Promise.resolve({
-                        readValue: function() {
-                          return Promise.resolve({
-                            getUint8: function() {
-                              return characteristicValue;
-                            }
-                          });
-                        }
-                      });
-                    }
-                  });
-                }
-              });
+            gatt: {
+              connect: function() {
+                return Promise.resolve({
+                  getPrimaryService: function() {
+                    return Promise.resolve({
+                      getCharacteristic: function() {
+                        return Promise.resolve({
+                          readValue: function() {
+                            return Promise.resolve({
+                              getUint8: function() {
+                                return characteristicValue;
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
             }
           });
         }
