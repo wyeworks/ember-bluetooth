@@ -1,4 +1,4 @@
-/* global navigator*/
+/* global navigator, Promise*/
 
 import Ember from 'ember';
 
