@@ -26,5 +26,5 @@ export default Ember.Service.extend({
     let value = await characteristic.readValue();
 
     return value.getUint8(0);
-  },
+  }
 });

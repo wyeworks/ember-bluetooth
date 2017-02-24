@@ -21,3 +21,36 @@ test('it returns false when bluetooth is not available', function(assert) {
 
   assert.ok(service.isAvailable());
 });
+
+test('it connects to a bluetooth device', function(assert) {
+  mockBluetooth()
+    .isAvailable(true)
+    .deviceName('fakedevice')
+    .characteristicValue('42');
+
+  let service = this.subject();
+
+  service.connectDevice();
+
+  assert.ok(service.get('device') == null);
+  assert.ok(service.get('server') == null);
+});
+
+test('it reads a value from a connected device', function(assert) {
+  mockBluetooth()
+    .isAvailable(true)
+    .deviceName('fakedevice')
+    .characteristicValue('42');
+
+  let service = this.subject();
+
+  service.connectDevice();
+
+  assert.ok(service.get('device') == null);
+  assert.ok(service.get('server') == null);
+
+  service.readValue('fake_service', 'fake_characteristic').then(value => {
+    assert.equal(value, 42);
+  });
+
+});
