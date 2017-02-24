@@ -9,10 +9,15 @@ export default Ember.Component.extend({
   actions: {
     connect() {
       this.get('bluetooth')
-        .requestDevice()
-        .getService('battery_service')
-        .getCharacteristic('battery_level')
-        .connect();
+          .connectDevice({ filters: [{ services: ['battery_service'] }] });
+    },
+
+    readValue() {
+      this.get('bluetooth')
+        .readValue('battery_service', 'battery_level')
+        .then(value => {
+          console.log(`Battery level is: ${value}`);
+        });
     }
   }
 });

@@ -1,49 +1,30 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
-  serviceName: null,
-  characteristicName: null,
-  characteristicValue: null,
+  device: null,
+  server: null,
+  service: null,
+  characteristic: null,
 
   isAvailable() {
     return 'bluetooth' in navigator;
   },
 
-  requestDevice() {
-    return this;
+  async connectDevice(options) {
+    let device = await navigator.bluetooth.requestDevice(options);
+    let server = await device.gatt.connect();
+
+    console.log(`Connected to bluetooth device: ${device.name}`);
+
+    this.set('device', device);
+    this.set('server', server);
   },
 
-  getService(serviceName) {
-    this.set('serviceName', serviceName);
+  async readValue(serviceName, characteristicName) {
+    let service = await this.get('server').getPrimaryService(serviceName);
+    let characteristic = await service.getCharacteristic(characteristicName);
+    let value = await characteristic.readValue();
 
-    return this;
+    return value.getUint8(0);
   },
-
-  getCharacteristic(characteristicName) {
-    this.set('characteristicName', characteristicName);
-
-    return this;
-  },
-
-  connect() {
-
-    if (this.isAvailable()) {
-      let serviceName = this.get('serviceName');
-      let characteristicName = this.get('characteristicName');
-      let options = { filters: [{ services: [serviceName] }] };
-
-      navigator.bluetooth.requestDevice(options)
-      .then(device => device.gatt.connect())
-      .then(server => server.getPrimaryService(serviceName))
-      .then(service => service.getCharacteristic(characteristicName))
-      .then(characteristic => {
-        return characteristic.readValue();
-      })
-      .then(value => {
-        console.log(`Battery level is: ${value.getUint8(0)}`);
-      })
-      .catch(error => { console.log(error); });
-    }
-
-  }
 });
