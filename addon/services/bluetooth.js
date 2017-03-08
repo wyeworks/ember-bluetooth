@@ -3,7 +3,6 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   device: null,
   server: null,
-  service: null,
   characteristic: null,
 
   isAvailable() {
