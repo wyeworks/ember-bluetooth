@@ -27,15 +27,29 @@ export default Ember.Service.extend({
     return value.getUint8(0);
   },
 
-  async listenValue(serviceName, characteristicName, cb) {
+  async startNotifications(serviceName, characteristicName, cb) {
     let characteristic = await this._getCharacteristic(serviceName, characteristicName);
     characteristic.addEventListener('characteristicvaluechanged', cb);
+    characteristic.startNotifications();
   },
 
+  stopNotifications() {
+    let characteristic = this.get('characteristic');
+
+    if (characteristic) {
+      characteristic.stopNotifications();
+    }
+  },
 
   async _getCharacteristic(serviceName, characteristicName) {
-    let service = await this.get('server').getPrimaryService(serviceName);
-    let characteristic = await service.getCharacteristic(characteristicName);
+    let characteristic = this.get('characteristic');
+
+    if (!characteristic) {
+      let service = await this.get('server').getPrimaryService(serviceName);
+      characteristic = await service.getCharacteristic(characteristicName);
+
+      this.set('characteristic', characteristic);
+    }
 
     return characteristic;
   }

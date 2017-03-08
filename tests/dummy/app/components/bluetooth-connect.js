@@ -28,9 +28,13 @@ export default Ember.Component.extend({
         });
     },
 
-    listenValue() {
+    startNotifications() {
       this.get('bluetooth')
-        .listenValue('battery_service', 'battery_level', this._handleValueEvent);
+        .startNotifications('battery_service', 'battery_level', this._handleValueEvent);
+    },
+
+    stopNotifications() {
+      this.get('bluetooth').stopNotifications();
     }
   }
 });
