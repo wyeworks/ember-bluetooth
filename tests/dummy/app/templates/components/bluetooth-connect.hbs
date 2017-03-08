@@ -1,4 +1,7 @@
-<button {{action "connect"}}>Connect!</button>
-<button {{action "readValue"}}>Read value</button>
-<button {{action "startNotifications"}}>Start notifications</button>
-<button {{action "stopNotifications"}}>Stop notifications</button>
+<button class="btn" {{action "connect"}}><span>Connect!</span></button>
+<button class="btn orange" {{action "readValue"}}><span>Read value</span></button>
+<button class="btn green" {{action "startNotifications"}}><span>Start notifications</span></button>
+<button class="btn red" {{action "stopNotifications"}}><span>Stop notifications</span></button>
+
+
+<h1>Battery {{batteryLevel}}%</h1>
