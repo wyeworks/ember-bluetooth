@@ -2,13 +2,16 @@ import Ember from 'ember';
 import layout from '../templates/components/bluetooth-connect';
 
 export default Ember.Component.extend({
+  classNames: ['bluetooth-connect'],
   layout,
 
   bluetooth: Ember.inject.service(),
 
+  batteryLevel: 0,
+
   _handleValueEvent(event) {
     let batteryLevel = event.target.value.getUint8(0);
-    console.log('> Battery Level is ' + batteryLevel + '%');
+    this.set('batteryLevel', batteryLevel);
   },
 
   actions: {
@@ -24,13 +27,13 @@ export default Ember.Component.extend({
       this.get('bluetooth')
         .readValue('battery_service', 'battery_level')
         .then(value => {
-          console.log(`Battery level is: ${value}`);
+          this.set('batteryLevel', value);
         });
     },
 
     startNotifications() {
       this.get('bluetooth')
-        .startNotifications('battery_service', 'battery_level', this._handleValueEvent);
+        .startNotifications('battery_service', 'battery_level', (event) => this._handleValueEvent(event));
     },
 
     stopNotifications() {
