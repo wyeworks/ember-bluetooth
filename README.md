@@ -15,10 +15,112 @@ bluetooth devices within ember apps.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd ember-bluetooth`
-* `npm install`
-* `bower install`
+`ember install ember-bluetooth`
+
+## Usage
+
+### Inject the bluetooth service
+
+```js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  bluetooth: Ember.inject.service(),
+  ...
+});
+```
+
+### Connect a device.
+
+IMPORTANT! This action should be the result of an user intereaction, otherwise the API will block the connection
+
+```html
+<button class="btn" {{action "connect"}}><span>Connect!</span></button>
+```
+
+```js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  bluetooth: Ember.inject.service(),
+
+  actions: {
+    connect() {
+      this.get('bluetooth')
+      .connectDevice({ filters: [{ services: ['battery_service'] }] })
+      .then((device) => {
+        console.log(`Connected to device: ${JSON.stringify(device)}`);
+      });
+    }
+  }
+});
+```
+
+### Request a service/characteristic
+
+This must be done after the connection.
+
+```js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  bluetooth: Ember.inject.service(),
+
+  actions: {
+   ...
+
+   readValue() {
+    this.get('bluetooth')
+      .readValue('battery_service', 'battery_level')
+      .then(value => {
+       console.log(value);
+      });
+    }
+  }
+});
+```
+
+### You can also request notification if a characteristic changes
+
+```js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  bluetooth: Ember.inject.service(),
+
+ _handleValueEvent(event) {
+    let batteryLevel = event.target.value.getUint8(0);
+    console.log(batteryLevel);
+  },
+
+  actions: {
+   ...
+
+    startNotifications() {
+      this.get('bluetooth')
+        .startNotifications('battery_service', 'battery_level', (event) => this._handleValueEvent(event));
+    }
+  }
+});
+```
+
+### You can stop the notification ( not yet implemented in the Web Bluetooth API)
+
+```js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  bluetooth: Ember.inject.service(),
+
+  actions: {
+   ...
+
+     stopNotifications() {
+       this.get('bluetooth').stopNotifications();
+     }
+  }
+});
+```
 
 ## Running
 
