@@ -14,19 +14,29 @@ export default Ember.Service.extend({
     let device = await navigator.bluetooth.requestDevice(options);
     let server = await device.gatt.connect();
 
-    console.log(`Connected to bluetooth device: ${device.name}`);
-
     this.set('device', device);
     this.set('server', server);
 
-    return  Ember.RSVP.Promise.resolve(device.name);
+    return Ember.RSVP.Promise.resolve({ id: device.id, name: device.name });
   },
 
   async readValue(serviceName, characteristicName) {
-    let service = await this.get('server').getPrimaryService(serviceName);
-    let characteristic = await service.getCharacteristic(characteristicName);
+    let characteristic = await this._getCharacteristic(serviceName, characteristicName);
     let value = await characteristic.readValue();
 
-    return Ember.RSVP.Promise.resolve(value.getUint8(0));
+    return value.getUint8(0);
+  },
+
+  async listenValue(serviceName, characteristicName, cb) {
+    let characteristic = await this._getCharacteristic(serviceName, characteristicName);
+    characteristic.addEventListener('characteristicvaluechanged', cb);
+  },
+
+
+  async _getCharacteristic(serviceName, characteristicName) {
+    let service = await this.get('server').getPrimaryService(serviceName);
+    let characteristic = await service.getCharacteristic(characteristicName);
+
+    return characteristic;
   }
 });

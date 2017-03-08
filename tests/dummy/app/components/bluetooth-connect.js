@@ -6,10 +6,18 @@ export default Ember.Component.extend({
 
   bluetooth: Ember.inject.service(),
 
+  _handleValueEvent(event) {
+    let batteryLevel = event.target.value.getUint8(0);
+    console.log('> Battery Level is ' + batteryLevel + '%');
+  },
+
   actions: {
     connect() {
       this.get('bluetooth')
-          .connectDevice({ filters: [{ services: ['battery_service'] }] });
+      .connectDevice({ filters: [{ services: ['battery_service'] }] })
+      .then((device) => {
+        console.log(`Connected to device: ${JSON.stringify(device)}`);
+      });
     },
 
     readValue() {
@@ -18,6 +26,11 @@ export default Ember.Component.extend({
         .then(value => {
           console.log(`Battery level is: ${value}`);
         });
+    },
+
+    listenValue() {
+      this.get('bluetooth')
+        .listenValue('battery_service', 'battery_level', this._handleValueEvent);
     }
   }
 });
