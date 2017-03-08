@@ -18,6 +18,8 @@ export default Ember.Service.extend({
 
     this.set('device', device);
     this.set('server', server);
+
+    return  Ember.RSVP.Promise.resolve(device.name);
   },
 
   async readValue(serviceName, characteristicName) {
@@ -25,6 +27,6 @@ export default Ember.Service.extend({
     let characteristic = await service.getCharacteristic(characteristicName);
     let value = await characteristic.readValue();
 
-    return value.getUint8(0);
+    return Ember.RSVP.Promise.resolve(value.getUint8(0));
   }
 });
